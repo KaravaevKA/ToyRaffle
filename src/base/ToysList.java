@@ -1,48 +1,46 @@
 package base;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.PriorityQueue;
-import java.util.Random;
 import java.util.Scanner;
 
 public class ToysList {
     PriorityQueue<Toy> list = new PriorityQueue<>();
-    Toy prizeToy = null;
 
-    public Toy addSomeToy(){
+    public ToysList() {
+        this.list = list;
+    }
+
+    public void addSomeToy() {
         Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
+
         System.out.println("Введите название игрушки: ");
         String toyName = scanner.next();
         System.out.println("Введите номер игрушки: ");
         int toyID = scanner.nextInt();
         System.out.println("Игрушке присвоен номер: " + toyID);
-        int frequency = random.nextInt(1,4);
-        Toy toy = new Toy(toyID,frequency,toyName);
-        return toy;
+        System.out.println("Укажите частоту выпадения игрушки (1-100): ");
+        int frequency = scanner.nextInt();
+        Toy toy = new Toy(toyID, frequency, toyName);
+        list.add(toy);
+    }
+    public void getPrize() throws FileNotFoundException {
+        File file = new File("Prizes.txt");
+        try (PrintWriter writer = new PrintWriter(file)) {
+            Toy prizeToy = null;
+            prizeToy = list.poll();
+            System.out.println("Поздравляем!! Вы выиграли: " + prizeToy.getName());
+            writer.println("Ваш выигрыш: " + prizeToy.getName());
+        }
     }
 
-    public void addToyToList(){
-        list.add(addSomeToy());
-    }
-
-    public void getPrize(){
-        prizeToy = list.poll();
-        System.out.println("Вы выиграли: " + prizeToy.getName());
-    }
-    public void printToyList(){
-        for (Toy toy:list) {
+    public void printToyList() {
+        for (Toy toy : list) {
             System.out.println(toy);
         }
     }
-    public void saveToFile() throws FileNotFoundException {
-        PrintWriter writer = new PrintWriter("Prizes.txt");
-        StringBuilder output = new StringBuilder();
-        output.append(list.peek());
-        output.append(';');
-        writer.println(output.toString());
-    }
+
 }
 
